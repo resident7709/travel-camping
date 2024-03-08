@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 
@@ -13,6 +13,22 @@ const Navbar = () => {
   const handleToggle = () => {
     setToggle(prev => !prev);
   };
+
+  // Закрыть меню при изменении размера окна
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth > 768) {
+        setToggle(false);
+      }
+    };
+
+    window.addEventListener('resize', handleResize);
+
+    // Удалить обработчик событий при размонтировании компонента
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
 
   return (
     <nav className='border-2 flexBetween max-container padding-container relative z-30 py-5'>
@@ -46,7 +62,7 @@ const Navbar = () => {
         onClick={handleToggle}
       />
       {toggle && (
-        <div className='p-6 bg-black-gradient absolute top-20 right-0 mx-4 my-2 min-w-[140px] rounded-xl sidebar'>
+        <div className='p-6 absolute top-20 right-0 mx-4 my-2 min-w-[140px] rounded-xl sidebar'>
           <ul className='list-none flex flex-col justify-end items-center flex-1'>
             {NAV_LINKS.map(link => (
               <li
